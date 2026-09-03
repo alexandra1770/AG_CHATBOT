@@ -6,6 +6,9 @@ Answers questions with answers from university courses about Genetic Algorithms
 A bilingual **RAG-based AI chatbot** designed to answer questions about Genetic Algorithms using university course and laboratory materials.
 
 The assistant supports both **Romanian and English**, maintains conversation context, retrieves relevant information from the course materials and can generate Python code for Genetic Algorithms problems.
+## Note
+
+This repository contains the final application code. Development and experimentation were performed in a separate Jupyter Notebook, which is not included in the public repository.
 
 ## Features
 
