@@ -1,0 +1,11 @@
+{
+  "base_path": "E:\\Alexandra PrJ\\CHATBOT\\AG_Chatbot",
+  "course_folder": "E:\\Alexandra PrJ\\CHATBOT\\Cursuri Alg Gen",
+  "lab_folder": "E:\\Alexandra PrJ\\CHATBOT\\Laboratoare Alg Gen",
+  "docs_folder": "E:\\Alexandra PrJ\\CHATBOT\\AG_Chatbot\\documents",
+  "extracted_folder": "E:\\Alexandra PrJ\\CHATBOT\\AG_Chatbot\\extracted",
+  "chroma_folder": "E:\\Alexandra PrJ\\CHATBOT\\AG_Chatbot\\chroma_db",
+  "output_folder": "E:\\Alexandra PrJ\\CHATBOT\\AG_Chatbot\\output",
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+  "created": "2026-09-01 16:05:31.236646"
+}

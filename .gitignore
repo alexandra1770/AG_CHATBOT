@@ -1,0 +1,59 @@
+# API keys and environment variables
+.env
+.env.*
+key.txt
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+rag_env/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+~*
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*_backup.py
+*_before_*.py
+
+# Local configuration with possible secrets
+config.local.json
+
+# Local RAG databases
+chroma_db/
+chroma_db_new/
+
+# Course and laboratory documents
+documente/
+documents/
+
+# Generated document data
+extracted/
+
+# Generated outputs
+output/
