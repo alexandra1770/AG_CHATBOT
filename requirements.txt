@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+gradio
+requests
+pydantic
+
+langchain
+langchain-chroma
+langchain-huggingface
+langchain-groq
+
+chromadb
+sentence-transformers
+torch
+
+groq
