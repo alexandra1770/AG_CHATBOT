@@ -61,7 +61,7 @@ evaluation_cases = [
     },
     {
         "question": "Ce este incrucisarea in algoritmii genetici?",
-        "expected_source": "Cap08.pdf",
+        "expected_source": "Cap04.pdf",
         "keywords": [
             "incrucis"
         ]
@@ -84,242 +84,239 @@ evaluation_cases = [
 ]
 
 
-total = len(evaluation_cases)
+if __name__ == "__main__":
 
-successful_tests = 0
-error_tests = 0
+    total = len(evaluation_cases)
 
-non_empty_answers = 0
-relevant_answers = 0
-correct_sources = 0
+    successful_tests = 0
+    error_tests = 0
 
-results = []
+    non_empty_answers = 0
+    relevant_answers = 0
+    correct_sources = 0
 
+    results = []
 
-for index, case in enumerate(
-    evaluation_cases,
-    start=1
-):
+    for index, case in enumerate(
+        evaluation_cases,
+        start=1
+    ):
 
-    question = case["question"]
-    expected_source = case["expected_source"]
-    keywords = case["keywords"]
+        question = case["question"]
+        expected_source = case["expected_source"]
+        keywords = case["keywords"]
 
-    print("\n" + "=" * 70)
-    print(f"TEST {index}/{total}")
-    print("Intrebare:", question)
+        print("\n" + "=" * 70)
+        print(f"TEST {index}/{total}")
+        print("Intrebare:", question)
 
-    try:
-        answer = answer_with_agent(
-            question
+        try:
+            answer = answer_with_agent(
+                question
+            )
+
+        except Exception as e:
+            print("\nEROARE TEHNICA:")
+            print(e)
+
+            error_tests += 1
+
+            results.append({
+                "question": question,
+                "expected_source": expected_source,
+                "status": "ERROR"
+            })
+
+            print("\nRezultat: ERROR")
+
+            continue
+
+        answer_text = str(answer)
+
+        print("\nRaspuns:")
+        print(answer_text)
+
+        if is_service_error(answer_text):
+
+            print("\n--- EVALUARE ---")
+            print("Eroare tehnica detectata: YES")
+            print("Rezultat: ERROR / SKIP")
+
+            error_tests += 1
+
+            results.append({
+                "question": question,
+                "expected_source": expected_source,
+                "status": "ERROR"
+            })
+
+            continue
+
+        answer_normalized = normalize_text(
+            answer_text
         )
 
-    except Exception as e:
-        print("\nEROARE TEHNICA:")
-        print(e)
+        has_answer = (
+            len(answer_text.strip()) > 0
+        )
 
-        error_tests += 1
+        keyword_found = any(
+            normalize_text(keyword)
+            in answer_normalized
+            for keyword in keywords
+        )
+
+        expected_source_name = (
+            expected_source.replace(
+                ".pdf",
+                ""
+            )
+        )
+
+        source_found = (
+            normalize_text(
+                expected_source_name
+            )
+            in answer_normalized
+        )
+
+        if has_answer:
+            non_empty_answers += 1
+
+        if keyword_found:
+            relevant_answers += 1
+
+        if source_found:
+            correct_sources += 1
+
+        if (
+            has_answer
+            and keyword_found
+            and source_found
+        ):
+            status = "PASS"
+            successful_tests += 1
+
+        else:
+            status = "FAIL"
 
         results.append({
             "question": question,
             "expected_source": expected_source,
-            "status": "ERROR"
+            "has_answer": has_answer,
+            "keyword_found": keyword_found,
+            "source_found": source_found,
+            "status": status
         })
-
-        print("\nRezultat: ERROR")
-
-        continue
-
-    answer_text = str(answer)
-
-    print("\nRaspuns:")
-    print(answer_text)
-
-    if is_service_error(answer_text):
 
         print("\n--- EVALUARE ---")
-        print("Eroare tehnica detectata: YES")
-        print("Rezultat: ERROR / SKIP")
 
-        error_tests += 1
-
-        results.append({
-            "question": question,
-            "expected_source": expected_source,
-            "status": "ERROR"
-        })
-
-        continue
-
-    answer_normalized = normalize_text(
-        answer_text
-    )
-
-    has_answer = (
-        len(answer_text.strip()) > 0
-    )
-
-    keyword_found = any(
-        normalize_text(keyword)
-        in answer_normalized
-        for keyword in keywords
-    )
-
-    expected_source_name = (
-        expected_source.replace(
-            ".pdf",
-            ""
+        print(
+            "Raspuns generat:",
+            "PASS" if has_answer else "FAIL"
         )
-    )
 
-    source_found = (
-        normalize_text(
-            expected_source_name
+        print(
+            "Relevanta de baza:",
+            "PASS" if keyword_found else "FAIL"
         )
-        in answer_normalized
+
+        print(
+            "Sursa asteptata mentionata:",
+            "PASS" if source_found else "FAIL"
+        )
+
+        print(
+            "Rezultat:",
+            status
+        )
+
+    valid_tests = (
+        total - error_tests
     )
 
-    if has_answer:
-        non_empty_answers += 1
+    if valid_tests > 0:
 
-    if keyword_found:
-        relevant_answers += 1
+        answer_rate = (
+            non_empty_answers
+            / valid_tests
+        )
 
-    if source_found:
-        correct_sources += 1
+        relevance_rate = (
+            relevant_answers
+            / valid_tests
+        )
 
-    if (
-        has_answer
-        and keyword_found
-        and source_found
-    ):
-        status = "PASS"
-        successful_tests += 1
+        citation_rate = (
+            correct_sources
+            / valid_tests
+        )
+
+        pass_rate = (
+            successful_tests
+            / valid_tests
+        )
 
     else:
-        status = "FAIL"
 
-    results.append({
-        "question": question,
-        "expected_source": expected_source,
-        "has_answer": has_answer,
-        "keyword_found": keyword_found,
-        "source_found": source_found,
-        "status": status
-    })
+        answer_rate = 0
+        relevance_rate = 0
+        citation_rate = 0
+        pass_rate = 0
 
-    print("\n--- EVALUARE ---")
+    print("\n" + "=" * 70)
+    print("REZULTAT FINAL - ANSWER EVALUATION")
 
     print(
-        "Raspuns generat:",
-        "PASS" if has_answer else "FAIL"
+        f"Cazuri totale: {total}"
     )
 
     print(
-        "Relevanta de baza:",
-        "PASS" if keyword_found else "FAIL"
+        f"Cazuri valide: {valid_tests}"
     )
 
     print(
-        "Sursa asteptata mentionata:",
-        "PASS" if source_found else "FAIL"
+        f"Erori tehnice / SKIP: "
+        f"{error_tests}"
     )
 
     print(
-        "Rezultat:",
-        status
+        f"Cazuri PASS: "
+        f"{successful_tests}/{valid_tests}"
+        if valid_tests > 0
+        else "Cazuri PASS: N/A"
     )
-
-
-valid_tests = (
-    total - error_tests
-)
-
-
-if valid_tests > 0:
-
-    answer_rate = (
-        non_empty_answers
-        / valid_tests
-    )
-
-    relevance_rate = (
-        relevant_answers
-        / valid_tests
-    )
-
-    citation_rate = (
-        correct_sources
-        / valid_tests
-    )
-
-    pass_rate = (
-        successful_tests
-        / valid_tests
-    )
-
-else:
-
-    answer_rate = 0
-    relevance_rate = 0
-    citation_rate = 0
-    pass_rate = 0
-
-
-print("\n" + "=" * 70)
-print("REZULTAT FINAL - ANSWER EVALUATION")
-
-print(
-    f"Cazuri totale: {total}"
-)
-
-print(
-    f"Cazuri valide: {valid_tests}"
-)
-
-print(
-    f"Erori tehnice / SKIP: "
-    f"{error_tests}"
-)
-
-print(
-    f"Cazuri PASS: "
-    f"{successful_tests}/{valid_tests}"
-    if valid_tests > 0
-    else "Cazuri PASS: N/A"
-)
-
-print(
-    f"Answer Generation Rate: "
-    f"{answer_rate:.2%}"
-)
-
-print(
-    f"Basic Relevance Rate: "
-    f"{relevance_rate:.2%}"
-)
-
-print(
-    f"Expected Source Citation Rate: "
-    f"{citation_rate:.2%}"
-)
-
-print(
-    f"Overall Pass Rate: "
-    f"{pass_rate:.2%}"
-)
-
-
-print("\n" + "=" * 70)
-print("REZULTATE INDIVIDUALE")
-
-for index, result in enumerate(
-    results,
-    start=1
-):
 
     print(
-        f"{index}. "
-        f"{result['status']} - "
-        f"{result['question']}"
+        f"Answer Generation Rate: "
+        f"{answer_rate:.2%}"
     )
+
+    print(
+        f"Basic Relevance Rate: "
+        f"{relevance_rate:.2%}"
+    )
+
+    print(
+        f"Expected Source Citation Rate: "
+        f"{citation_rate:.2%}"
+    )
+
+    print(
+        f"Overall Pass Rate: "
+        f"{pass_rate:.2%}"
+    )
+
+    print("\n" + "=" * 70)
+    print("REZULTATE INDIVIDUALE")
+
+    for index, result in enumerate(
+        results,
+        start=1
+    ):
+
+        print(
+            f"{index}. "
+            f"{result['status']} - "
+            f"{result['question']}"
+        )

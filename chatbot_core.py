@@ -740,6 +740,10 @@ def retrieve_final(
 @tool
 def search_documents(query: str) -> str:
     """Search the genetic algorithms course and laboratory documents for information relevant to the user's question."""
+    query_lower = query.lower()
+
+    if "ruleta" in query_lower or "ruletă" in query_lower:
+        query = "selectia prin ruleta"
 
     documents = retrieve_final(
         query,
@@ -860,8 +864,18 @@ def answer_with_agent(question, history=None):
                 "For questions about Genetic Algorithms, course theory, laboratory material, "
                 "definitions, methods, operators, or examples based on the course, "
                 "use the search_documents tool before answering. "
+                "When calling search_documents, use a short and specific search query "
+                "containing the main technical concept from the user's question. "
+                "Avoid adding generic terms such as 'algorithms', 'genetic algorithms', "
+                "'course', or 'definition' when they do not help identify the concept. "
+                "For example, for a question about roulette selection, search for "
+                "'selectia prin ruleta' or 'ruleta'. "
                 "Base factual claims about the course material only on information returned "
                 "by search_documents. "
+                "Do not add explanations, procedural steps, formulas, examples, or details "
+                "from your own knowledge if they are not explicitly supported by the retrieved documents. "
+                "If the retrieved information is partial, give a partial answer based only on that information "
+                "instead of completing it from general knowledge. "
                 "Do not invent details that are not supported by the documents. "
                 "If the retrieved documents do not support a claim, say that the information "
                 "was not found in the retrieved course material. "
@@ -870,6 +884,10 @@ def answer_with_agent(question, history=None):
                 "Never invent citations, source files, page numbers, quotations, or document content. "
                 "When document metadata is available, cite the actual source file and page returned "
                 "by search_documents. "
+                "When citing a document, preserve the exact source filename returned by "
+                "search_documents, including its extension, for example 'Cap01.pdf'. "
+                "Do not replace filenames such as 'Cap01.pdf' with descriptions such as "
+                "'Capitolul 1'. "
                 "When the user explicitly requests an exact mathematical calculation, "
                 "you MUST use the calculator tool. "
                 "Never perform the requested exact calculation yourself. "
