@@ -17,9 +17,7 @@ from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage, SystemMessage
 
 
-BASE_PATH = Path(
-    r"E:\Alexandra PrJ\CHATBOT\AG_Chatbot"
-)
+BASE_PATH = Path(__file__).resolve().parent
 
 CHROMA_FOLDER = (
     BASE_PATH / "chroma_db"

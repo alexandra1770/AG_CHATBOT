@@ -14,3 +14,4 @@ sentence-transformers
 torch
 
 groq
+mcp==2.2.0
