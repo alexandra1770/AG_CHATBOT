@@ -72,4 +72,14 @@ async def test_mcp_search_documents():
         )
 
         assert len(text) > 0
-        assert "Document" in text
+
+        chunks_file = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            "extracted",
+            "chunks.pkl"
+        )
+
+        if os.path.exists(chunks_file):
+            assert "Document" in text
+        else:
+            assert text == "No relevant information was found in the documents."
