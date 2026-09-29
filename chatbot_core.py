@@ -58,15 +58,15 @@ vectorstore = Chroma(
 )
 
 
-if not CHUNKS_FILE.exists():
-    raise FileNotFoundError(
-        f"Chunks file not found: {CHUNKS_FILE}"
+if CHUNKS_FILE.exists():
+    with open(CHUNKS_FILE, "rb") as f:
+        chunks = pickle.load(f)
+else:
+    chunks = []
+    logger.warning(
+        f"Chunks file not found: {CHUNKS_FILE}. "
+        "RAG functionality may be unavailable."
     )
-
-
-with open(CHUNKS_FILE, "rb") as f:
-    chunks = pickle.load(f)
-
 
 llm = ChatGroq(
     model="openai/gpt-oss-20b",
